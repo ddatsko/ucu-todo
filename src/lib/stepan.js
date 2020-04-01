@@ -1,36 +1,49 @@
-
 export default class Stepan {
-  static createElement(element, parent, attributes = {}) {
-    // TODO: check if this is a valid tag name
-    const newElement = document.createElement(element);
-
-    const { innerHTML, innerText } = attributes;
-
-    for (let attribute in attributes) {
-      if (['innerHTML', 'innerText'].includes(attribute)) {
-        continue;
-      }
-
-      newElement.setAttribute(attribute, attributes[attribute]);
+    static validTag(tagName) {
+        return document.createElement(tagName).toString() !== "[object HTMLUnknownElement]";
     }
 
-    innerHTML && (newElement.innerHTML = innerHTML);
-    innerText && (newElement.innerText = innerText);
+    static createElement(element, parent, attributes = {}) {
+        if (!Stepan.validTag(element))
+            throw new StepanError("Invalid tag name", 2);
+        const newElement = document.createElement(element);
 
-    parent.appendChild(newElement);
+        const {innerHTML, innerText} = attributes;
 
-    return newElement;
-  }
+        for (let attribute in attributes) {
+            if (['innerHTML', 'innerText'].includes(attribute)) {
+                continue;
+            }
 
-  static Component = class {
-    constructor(parent) {
+            newElement.setAttribute(attribute, attributes[attribute]);
+        }
 
-      // TODO: 1. Create StepanError class to define all framework errors
-      //       2. throw an error if parent is null or undefined, or if it's not a valid DOM object
+        innerHTML && (newElement.innerHTML = innerHTML);
+        innerText && (newElement.innerText = innerText);
 
-      this.parent = parent;
+        parent.appendChild(newElement);
+
+        return newElement;
     }
 
-    // TODO (Bonus): Ensure that every component returns a top-level root element
-  }
+    static Component = class {
+        constructor(parent) {
+
+            if (!parent || !(parent instanceof Element))
+                throw new StepanError("Parent element is invalid", 1);
+
+            this.parent = parent;
+        }
+
+        // TODO (Bonus): Ensure that every component returns a top-level root element
+    }
+}
+
+export class StepanError extends Error {
+
+    constructor(message, code) {
+        super(message);
+        this.name = `Stepan Error (code ${code})`;
+        this.code = code;
+    }
 }

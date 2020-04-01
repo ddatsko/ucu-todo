@@ -29,10 +29,10 @@ class App extends Stepan.Component {
     new TodoList(sectionMain).render(todos);
 
     // Footer-----------------
-    new Footer(divContainer).render(todos)
+    new Footer(divContainer).render(todos);
 
     return rootElement
   }
 }
 
-new App(document.getElementById('todoapp')).render(todos)
+new App(document.getElementById('todoapp')).render(todos);
